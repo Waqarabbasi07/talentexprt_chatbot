@@ -12,6 +12,14 @@ from langchain.agents import AgentType
 from langchain.agents import AgentExecutor, create_tool_calling_agent
 from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain.memory import ConversationBufferMemory
+from fastapi import FastAPI
+from pydantic import BaseModel
+import os
+from dotenv import load_dotenv
+from langchain_core.output_parsers import StrOutputParser
+load_dotenv()
+os.environ['OPENAI_API_KEY'] = os.getenv("OPENAI_API_KEY")
+os.environ['SERPER_API_KEY'] = os.getenv("SERPER_API_KEY")
 
 
 # PDF LOADER
@@ -37,7 +45,6 @@ def pdf_search(query: str) -> str:
     return qa_chain.run(query)
 
 
-
 # GOOGLE WEB TOOL
 model = OpenAI()
 google_search = GoogleSerperAPIWrapper()
@@ -50,7 +57,6 @@ def google_lookup(query: str) -> str:
 
 
 # SOME CUSTOM TOOL AND CHATBOT
-
 @tool
 def multiply(a: int, b: int) -> int:
     """Multiplies two integers together. Use when you need to calculate a product."""
@@ -91,6 +97,7 @@ agent = create_tool_calling_agent(
     prompt=prompt
 )
 
+
 agent_executor = AgentExecutor(
     agent=agent,
     tools=tools,
@@ -98,10 +105,19 @@ agent_executor = AgentExecutor(
     verbose=True
 )
 
-try:
 
-    response = agent_executor.invoke({"input": "can you update me about the currect conflict between pakistan and india?"})
-    print("Agent response:", response)
-except Exception as e:
+app = FastAPI(title="LangChain Chatbot API")
 
-    print("Error:", e)
+class ChatRequest(BaseModel):
+    input: str
+
+class ChatResponse(BaseModel):
+    response: str
+
+@app.post("/chat", response_model=ChatResponse)
+def chat(request: ChatRequest):
+    try:
+        result = agent_executor.invoke({"input": request.input})
+        return ChatResponse(response=result["output"])
+    except Exception as e:
+        return ChatResponse(response=f"Error: {str(e)}")

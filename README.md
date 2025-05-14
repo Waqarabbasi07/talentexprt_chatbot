@@ -12,7 +12,7 @@ This is an intelligent chatbot built using LangChain, powered by OpenAI models, 
 Features
 Conversational interface with memory
 Tool use: math operations (add, multiply, divide)
-Real-time information via Google Search (Serper API)
+Real-time information via Google Search
 PDF document question answering
-Built on OpenAI GPT-4o model
+Built on OpenAI GPT-4o-mini model
 Context-aware agent reasoning using LangChain
