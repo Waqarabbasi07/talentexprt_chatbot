@@ -32,7 +32,7 @@ class JobDescriptionRequest(BaseModel):
 
 class titleRequest(BaseModel):
     title: str
-
+	
 
 # Custom type for proposals keys
 ProposalKey = Union[str, int]
@@ -107,77 +107,6 @@ def openaiAI_bio(prompt: str):
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
 
 
-
-# def openaiAI_jd(prompt: str):
-    # jd_prompt = f"""
-    # As an expert Upwork job description writer, create a **compelling** job posting in **valid JSON format** with the following structure:
-
-    # {{
-    #     "projectOverview": "Concise and engaging project introduction (50-70 words)",
-    #     "requirements": ["List key qualifications and skills"],
-    #     "deliverables": ["List expected deliverables"],
-    #     "callToAction": "Clear final statement encouraging applications"
-    # }}
-
-    # - **Keep the response strictly in JSON format**
-    # - **Do not include any additional text, headers, or explanations**
-    # - **Ensure all fields are present and properly formatted**
-
-    # Job Posting Input: {prompt}
-    # """
-
-    # try:
-    #     response = client.chat.completions.create(
-    #         model="gpt-4o-mini",
-    #         messages=[{"role": "user", "content": jd_prompt}],
-    #         max_tokens=400,  # Increased from 150 to 400 to prevent truncation
-    #     )
-
-    #     response_text = response.choices[0].message.content.strip()
-    #     print("response_text", response_text)
-
-    #     # Attempt to extract JSON
-    #     json_start = response_text.find('{')
-    #     json_end = response_text.rfind('}') + 1
-
-    #     if json_start == -1 or json_end == 0:
-    #         raise ValueError("No valid JSON found in response.")
-
-    #     json_data = response_text[json_start:json_end]
-
-    #     try:
-    #         jd_data = json.loads(json_data)
-
-    #         required_keys = ["projectOverview", "requirements", "deliverables", "callToAction"]
-    #         if not all(k in jd_data for k in required_keys):
-    #             raise ValueError("Missing expected JSON keys.")
-
-    #         html_content = f"""
-    #         <div class="container">
-    #             <h2>Job Description</h2>
-    #             <h3>Project Overview</h3>
-    #             <p>{jd_data["projectOverview"]}</p>
-    #             <h3>Requirements</h3>
-    #             <ul>
-    #                 {"".join(f"<li>{req}</li>" for req in jd_data["requirements"])}
-    #             </ul>
-    #             <h3>Deliverables</h3>
-    #             <ul>
-    #                 {"".join(f"<li>{deliverable}</li>" for deliverable in jd_data["deliverables"])}
-    #             </ul>
-    #             <h3>Call to Action</h3>
-    #             <p>{jd_data["callToAction"]}</p>
-    #         </div>
-    #         """
-
-    #         return HTMLResponse(content=html_content.strip(), status_code=200)
-
-    #     except json.JSONDecodeError:
-    #         raise HTTPException(status_code=500, detail=f"Invalid JSON response: {response_text}")
-
-    # except Exception as e:
-    #     raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
-
 def openaiAI_jd(prompt: str):
     jd_prompt = f"""
     As an expert Upwork job description writer, create a **compelling** job posting in **valid JSON format** with the following structure:
@@ -249,81 +178,6 @@ def openaiAI_jd(prompt: str):
 
 
 
-
-
-# def openaiAI_proposal(prompt: str):
-#     proposal_prompt = f"""
-#     Analyze the following job posting and create a focused proposal in **valid JSON format**:
-
-#     {{
-#         "proposalTitle": "Title of the proposal",
-#         "introduction": "A concise intro addressing the client's needs",
-#         "pastProjects": ["Highlight 2-3 relevant past projects with impact metrics"],
-#         "technicalApproach": "Describe the solution approach for this project",
-#         "implementationMethodology": ["Phase-wise breakdown of implementation"],
-#         "callToAction": "Encouraging statement to conclude"
-#     }}
-
-#     - **Ensure the response is valid JSON (NO extra text, no markdown)**
-#     - **Do NOT wrap the response in backticks or markdown formatting**
-#     - **Return only the JSON object, without explanations**
-
-#     Job Posting Input: {prompt}
-#     """
-
-#     try:
-#         response = client.chat.completions.create(
-#             model="gpt-4o",
-#             messages=[{"role": "user", "content": proposal_prompt}],
-#             max_tokens=400,  # Increased from 200 to 400 to prevent truncation
-#         )
-
-#         response_text = response.choices[0].message.content.strip()
-#         print("response_text", response_text)
-
-#         # Extract JSON
-#         json_start = response_text.find('{')
-#         json_end = response_text.rfind('}') + 1
-
-#         if json_start == -1 or json_end == 0:
-#             raise ValueError("No valid JSON found in response.")
-
-#         json_data = response_text[json_start:json_end]
-
-#         try:
-#             proposal_data = json.loads(json_data)
-
-#             required_keys = ["proposalTitle", "introduction", "pastProjects", "technicalApproach", "implementationMethodology", "callToAction"]
-#             if not all(k in proposal_data for k in required_keys):
-#                 raise ValueError("Missing expected JSON keys.")
-
-#             # Convert response into formatted HTML
-#             html_content = f"""
-#             <div class="container">
-#                 <h2>{proposal_data["proposalTitle"]}</h2>
-#                 <h3>Introduction</h3>
-#                 <p>{proposal_data["introduction"]}</p>
-#                 <h3>Past Projects</h3>
-#                 <ul>
-#                     {"".join(f"<li>{project}</li>" for project in proposal_data["pastProjects"])}
-#                 </ul>
-#                 <h3>Technical Approach</h3>
-#                 <p>{proposal_data["technicalApproach"]}</p>
-#                 <h3>Implementation Methodology</h3>
-#                 <ul>
-#                     {"".join(f"<li>{method}</li>" for method in proposal_data["implementationMethodology"])}
-#                 </ul>
-#                 <h3>Call to Action</h3>
-#                 <p>{proposal_data["callToAction"]}</p>
-#             </div>
-#             """
-#             return HTMLResponse(content=html_content.strip(), status_code=200)
-
-#         except json.JSONDecodeError:
-#             raise HTTPException(status_code=500, detail=f"Invalid JSON response: {response_text}")
-
-#     except Exception as e:
-#         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
 
 
 def openaiAI_proposal(prompt: str):
@@ -664,8 +518,3 @@ async def generate_contract(request: JobDescriptionRequest):
 async def generate_articals(request: titleRequest):
     return openAI_article(request.title)
 
-# class assisment(BaseModel):
-#     assisment_: str
-# @app.post("/gernerate_assisment")
-# async def generate_assisment(request: assisment):
-#     return openAI_assisment(request.assisment_)
