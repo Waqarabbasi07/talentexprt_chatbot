@@ -109,18 +109,22 @@ def openaiAI_bio(prompt: str):
 
 def openaiAI_jd(prompt: str):
     jd_prompt = f"""
-    As an expert Upwork job description writer, create a **compelling** job posting in **valid JSON format** with the following structure:
+    You are an expert Upwork job-description writer.
 
-    {{
-        "projectOverview": "Concise and engaging project introduction (50-70 words)",
-        "requirements": ["List key qualifications and skills"],
-        "deliverables": ["List expected deliverables"],
-        "callToAction": "Clear final statement encouraging applications"
-    }}
+    Task  
+    Using the “Job Posting Input” provided, craft a compelling job posting in **valid JSON** with exactly this structure:
 
-    - **Keep the response strictly in JSON format**
-    - **Do not include any additional text, headers, or explanations**
-    - **Ensure all fields are present and properly formatted**
+    {
+    "projectOverview": "Concise, engaging overview (50–70 words)",
+    "requirements": ["List of key qualifications and skills"],
+    "deliverables": ["List of expected deliverables"],
+    "callToAction": "Clear final statement encouraging applications"
+    }
+
+    Rules  
+    • Output **only** the JSON object—no additional text, headings, or explanations.  
+    • All four fields must be present and properly formatted.  
+    • Adapt the language, tone, and content to fit the role described—whether technical or non-technical.
 
     Job Posting Input: {prompt}
     """
@@ -252,7 +256,6 @@ def openaiAI_proposal(prompt: str):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
-
 
 
 
