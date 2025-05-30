@@ -106,7 +106,7 @@ agent_executor = AgentExecutor(
 )
 
 
-app = FastAPI(title="LangChain Chatbot API")
+app = FastAPI(title="talent_Chatbot")
 
 class ChatRequest(BaseModel):
     input: str
